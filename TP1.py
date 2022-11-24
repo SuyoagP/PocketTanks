@@ -1,6 +1,7 @@
 # This demos using modes (aka screens).
 
 from cmu_112_graphics import *
+from Tank import Tank
 import random
 import math
 
@@ -155,7 +156,7 @@ def gameMode_keyPressed(app, event):
 
 def damageTank(app):
     x0,y0 = app.currX, app.currY
-    if (x0 > (playerTwo.x0) and x0 < playerTwo.x1  and 
+    if (x0 > (playerTwo.x0) and x0 < playerTwo.x1  and
             (y0 > playerTwo.y0) and y0 < playerTwo.y1):
             playerTwo.health -= 10
     return playerTwo.health
@@ -178,29 +179,6 @@ def helpMode_redrawAll(app, canvas):
 
 def helpMode_keyPressed(app, event):
     app.mode = 'gameMode'
-class Tank(object):
-    def __init__(self,color,health,player,x0,y0,x1,y1):
-        self.color = color
-        self.health = health
-        self.player = player
-        self.x0 = x0
-        self.y0 = y0
-        self.x1 = x1
-        self.y1 = y1
-    def getHealth(self):
-        return self.health
-    def getPlayer(self):
-        return self.plauer
-    def getColor(self):
-        return self.color
-    def getx0(self):
-        return (self.x0)
-    def gety0(self):
-        return (self.y0)
-    def getx1(self):
-        return (self.x1)
-    def gety1(self):
-        return (self.y1)
 
 playerOne = Tank('red',100,True,50,390,75,400)
 playerTwo = Tank('purple',100,True,285,390,310,400)
@@ -219,7 +197,7 @@ def appStarted(app):
     app.destroyedTerrain = []
     app.weaponCoords = []
     app.baseWeaponR = 5
-    app.slope = math.sin(app.angle)/math.cos(app.angle)
+    app.slope = 1
     app.weaponFired = False
     app.startX,app.startY = playerOne.x1,playerOne.y0
     app.currX,app.currY = app.startX,app.startY
