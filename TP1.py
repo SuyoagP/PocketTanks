@@ -2,6 +2,7 @@
 
 from cmu_112_graphics import *
 from Tank import Tank
+from Weapon import *
 import random
 import math
 
@@ -22,10 +23,11 @@ def splashScreenMode_keyPressed(app, event):
     if (event.key == 'p'):    
         app.mode = 'gameMode'
 
+
 ##########################################
 # Game Mode
 ##########################################
-
+newBullet = Bullet(200,200)
 def gameMode_redrawAll(app, canvas):
     canvas.create_rectangle(0,0,app.width,app.height, fill='blue')
 
@@ -36,8 +38,8 @@ def gameMode_redrawAll(app, canvas):
         x,y = radius
         r = app.baseWeaponR 
         canvas.create_oval(x-r,y-r,x+r,y+r, fill = 'cyan')
-    canvas.create_oval(app.currX,app.currY,app.currX+2,app.currY+2, 
-                            fill = 'black')
+    canvas.create_oval(newBullet.currX,newBullet.currY,newBullet.currX+20,newBullet.currY+20,
+                            fill = 'purple')
     
     canvas.create_rectangle(playerOne.x0,playerOne.y0,playerOne.x1,playerOne.y1,
                             fill = playerOne.color)
@@ -159,6 +161,7 @@ def damageTank(app):
     if (x0 > (playerTwo.x0) and x0 < playerTwo.x1  and
             (y0 > playerTwo.y0) and y0 < playerTwo.y1):
             playerTwo.health -= 10
+
     return playerTwo.health
 
 
