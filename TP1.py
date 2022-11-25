@@ -3,6 +3,7 @@
 from cmu_112_graphics import *
 from Tank import Tank
 from Weapon import *
+from Move import *
 import random
 import math
 
@@ -27,7 +28,10 @@ def splashScreenMode_keyPressed(app, event):
 ##########################################
 # Game Mode
 ##########################################
-newBullet = Bullet(200,200)
+playerOne = Tank('red',100,True,50,390,75,400)
+playerTwo = Tank('purple',100,True,285,390,310,400)
+newBullet = Bullet(playerOne.getx1(),playerOne.gety0(),45,50, False, 76,390)
+playerOneMove = Move(playerOne, playerTwo, newBullet, 45, 50, False)
 def gameMode_redrawAll(app, canvas):
     canvas.create_rectangle(0,0,app.width,app.height, fill='blue')
 
@@ -38,7 +42,7 @@ def gameMode_redrawAll(app, canvas):
         x,y = radius
         r = app.baseWeaponR 
         canvas.create_oval(x-r,y-r,x+r,y+r, fill = 'cyan')
-    canvas.create_oval(newBullet.currX,newBullet.currY,newBullet.currX+20,newBullet.currY+20,
+    canvas.create_oval(newBullet.currX, newBullet.currY,newBullet.currX+5,newBullet.currY+2,
                             fill = 'purple')
     
     canvas.create_rectangle(playerOne.x0,playerOne.y0,playerOne.x1,playerOne.y1,
@@ -49,35 +53,16 @@ def gameMode_redrawAll(app, canvas):
     canvas.create_text(app.width/10+15, app.width/8, 
                     text=f'Player One Health \n {playerOne.health}',
                        font='Arial 16 bold', fill='black')
-    canvas.create_text(app.width - 60, app.width/8, 
-                    text=f'Player Two Health \n {playerTwo.health}',
+    canvas.create_text(app.width/12 + 15, app.width/4,
+                    text=f'Power : {playerOneMove.angle}' ,
+                       font='Arial 16 bold', fill='black')
+    canvas.create_text(app.width/12 + 15 , app.width / 2,
+                       text=f'Angle \n {playerOneMove.power}',
                        font='Arial 16 bold', fill='black')
 
 
-def weaponFired(app):
-    if app.weaponFired == False:
-        return
-    else:
-
-        if app.timerMax > 7 and app.timerMax  < 29:
-
-            app.currX = app.currX+app.slope
-            app.currY = app.currY+0
 
 
-        elif app.timerMax > 30:
-            
-            app.currX = app.currX+app.slope
-            app.currY = app.currY+app.slope
-        
-        else:
-            app.currX = app.currX+app.slope
-            app.currY = app.currY-app.slope
-        
-
-    
-    if app.currX > app.width or app.currY < 0:
-        app.currX, app.currY = -99999,-99999
 
 def getCellBounds(app, row, col):
     # aka "modelToView"
@@ -130,11 +115,18 @@ def pointInGrid(app, x, y):
     # return True if (x, y) is inside the grid defined by app.
     return ((app.margin <= x <= app.width-app.margin) and
             (app.margin <= y <= app.height-app.margin))
+
 def gameMode_timerFired(app):
-    app.timerMax += 1
-    weaponFired(app)
+    if newBullet.fire == True:
+        app.bulletTime += 0.02
+    newBullet.weaponLocation(playerOneMove.angle, playerOneMove.power, app.bulletTime, newBullet.startX,newBullet.startY,app)
     destroyTerrain(app)
     damageTank(app)
+    if playerTwo.health <= 0:
+        app.mode = 'playerOneWin'
+    if playerOne.health <= 0:
+        app.mode = 'playerTw0Win'
+
 
 def gameMode_mousePressed(app, event):
     app.cx = event.x
@@ -150,21 +142,48 @@ def destroyTerrain(app):
     return app.rectangleCoords
 
 def gameMode_keyPressed(app, event):
-    if (event.key == 'Left'):    
-        app.weaponFired = True
-        gameMode_timerFired(app)
-    if (event.key == 'h'):    
-        app.mode = 'gameMode'
+    if (event.key == 'f'):
+        newBullet.fire = True
+    if (event.key == 'h'):
+        app.mode = 'helpMode'
+    if (event.key == 'Up'):
+        if playerOneMove.fire == False:
+            playerOneMove.angle += 1
+            print(playerOneMove.angle)
+    if (event.key == 'Down'):
+        if playerOneMove.fire == False:
+            playerOneMove.angle -= 1
+            print(playerOneMove.angle)
+    if (event.key == 'w'):
+        if playerOneMove.fire == False:
+            playerOneMove.power += 1
+            print(playerOneMove.angle)
+    if (event.key == 's'):
+        if playerOneMove.fire == False:
+            playerOneMove.angle -= 1
+            print(playerOneMove.angle)
 
 def damageTank(app):
     x0,y0 = app.currX, app.currY
     if (x0 > (playerTwo.x0) and x0 < playerTwo.x1  and
             (y0 > playerTwo.y0) and y0 < playerTwo.y1):
-            playerTwo.health -= 10
+            playerTwo.health -= 200
 
     return playerTwo.health
 
 
+def pOneWin_redrawAll(app, canvas):
+    font = 'Arial 26 bold'
+    canvas.create_text(app.width/2, 150, text='Player One Win',
+                       font=font, fill='black')
+    canvas.create_text(app.width/2, 250, text='(Insert helpful message here)',
+                       font=font, fill='black')
+    canvas.create_text(app.width/2, 350,
+                        text='Press any key to return to the game!',
+                       font=font, fill='black')
+
+def helpMode_keyPressed(app, event):
+    app.mode = 'splashScreenMode'
 
 ##########################################
 # Help Mode
@@ -183,8 +202,7 @@ def helpMode_redrawAll(app, canvas):
 def helpMode_keyPressed(app, event):
     app.mode = 'gameMode'
 
-playerOne = Tank('red',100,True,50,390,75,400)
-playerTwo = Tank('purple',100,True,285,390,310,400)
+
 ##########################################
 # Main App
 ##########################################
@@ -204,22 +222,11 @@ def appStarted(app):
     app.weaponFired = False
     app.startX,app.startY = playerOne.x1,playerOne.y0
     app.currX,app.currY = app.startX,app.startY
-    app.timerMax = -100
-    print(math.sin(app.angle),math.cos(app.angle),app.slope)
+    app.bulletTime = 0
     createTerrain(app)
 
-def randomizeDot(app):
-    app.x = random.randint(20, app.width-20)
-    app.y = random.randint(20, app.height-20)
-    app.r = random.randint(10, 20)
-    app.color = random.choice(['red', 'orange', 'yellow', 'green', 'blue'])
-    app.dx = random.choice([+1,-1])*random.randint(3,6)
-    app.dy = random.choice([+1,-1])*random.randint(3,6)
 
-def moveDot(app):
-    app.x += app.dx
-    if (app.x < 0) or (app.x > app.width): app.dx = -app.dx
-    app.y += app.dy
-    if (app.y < 0) or (app.y > app.height): app.dy = -app.dy
+
+
 
 runApp(width=600, height=500)

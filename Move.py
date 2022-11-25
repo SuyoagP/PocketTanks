@@ -13,12 +13,13 @@ class Move:
     def changePower(self, dPower):
         self.power += dPower
     # def executeMove(self):
-    #     if weaponHits:
+    #     x0,y0 = newBullet.currX, newBullet.currY
+    #     if (x0 > (playerTwo.x0) and x0 < playerTwo.x1 and (y0 > playerTwo.y0) and y0 < playerTwo.y1):
     #         self.victim.damage(self.weaponType)
-    #
-    #
-    #
-    #
-    # def
+
+
+
+
+
 
 

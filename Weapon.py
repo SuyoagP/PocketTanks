@@ -1,16 +1,31 @@
 import math
 from cmu_112_graphics import *
 
+
 class Weapon(App):
     #Found at https://stackoverflow.com/questions/2094658/how-do-i-declare-an-attribute-in-python-without-a-value
     damage = None
     terrainDestroy = None
-    def __init__(self, currX, currY):
+    def __init__(self, currX, currY,angle,power,fired,startX,startY):
+        self.startX = startX
+        self.startY = startY
         self.currX = currX
         self.currY = currY
-    def weaponLocation(self, angle, power, time):
-        self.currX = time
-        self.currY = (-power/math.atan(angle))*(time - power)
+        self.angle = angle
+        self.power = power
+        self.fire = fired
+    def weaponLocation(self, angle, power, time, x0, y0,app):
+        if self.fire == True:
+            gravity = 9.81
+            vx = 2 * power * math.cos(math.radians(angle))
+            vy = 2 * power * math.sin(math.radians(angle))
+            self.currX = x0 + vx * time
+            self.currY = y0 - (vy * time - 0.5 * gravity * time ** 2)
+            print(self.currX, self.currY)
+        if self.currX > app.width or self.currX < 0 or self.currY > app.height:
+            self.currX = x0
+            self.currY = y0
+
 
 
 
