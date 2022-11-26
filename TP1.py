@@ -31,7 +31,11 @@ def splashScreenMode_keyPressed(app, event):
 playerOne = Tank('red',100,True,50,390,75,400)
 playerTwo = Tank('purple',100,True,285,390,310,400)
 newBullet = Bullet(playerOne.getx1(),playerOne.gety0(),45,50, False, 76,390)
-playerOneMove = Move(playerOne, playerTwo, newBullet, 45, 50, False)
+newBulletTwo = Bullet(playerTwo.getx0(),playerTwo.gety0(),45,50, False, 285,390)
+print(playerTwo.getx0(),playerTwo.gety0())
+playerOneMove = Move(playerOne, playerTwo, newBullet,True, 45, 50, False)
+playerTwoMove = Move(playerTwo, playerOne, newBulletTwo, False, 45, 50, False)
+print(playerOneMove.Move == playerTwo)
 def gameMode_redrawAll(app, canvas):
     canvas.create_rectangle(0,0,app.width,app.height, fill='blue')
 
@@ -44,6 +48,8 @@ def gameMode_redrawAll(app, canvas):
         canvas.create_oval(x-r,y-r,x+r,y+r, fill = 'cyan')
     canvas.create_oval(newBullet.currX, newBullet.currY,newBullet.currX+5,newBullet.currY+2,
                             fill = 'purple')
+    canvas.create_oval(newBulletTwo.currX-5, newBulletTwo.currY,newBulletTwo.currX,newBulletTwo.currY+2,
+                            fill = 'yellow')
     
     canvas.create_rectangle(playerOne.x0,playerOne.y0,playerOne.x1,playerOne.y1,
                             fill = playerOne.color)
@@ -53,11 +59,14 @@ def gameMode_redrawAll(app, canvas):
     canvas.create_text(app.width/10+15, app.width/8, 
                     text=f'Player One Health \n {playerOne.health}',
                        font='Arial 16 bold', fill='black')
+    canvas.create_text(app.width/10+400, app.width/8,
+                    text=f'Player Two Health \n {playerTwo.health}',
+                       font='Arial 16 bold', fill='black')
     canvas.create_text(app.width/12 + 15, app.width/4,
-                    text=f'Power : {playerOneMove.angle}' ,
+                    text=f'Power : {playerOneMove.power}' ,
                        font='Arial 16 bold', fill='black')
     canvas.create_text(app.width/12 + 15 , app.width / 2,
-                       text=f'Angle \n {playerOneMove.power}',
+                       text=f'Angle \n {playerOneMove.angle}',
                        font='Arial 16 bold', fill='black')
 
 
@@ -105,27 +114,35 @@ def createTerrain(app):
             currY1 = currY1
             currX2 = currX2+5
             currY2 = currY2
-            app.rectangleCoords.append((currX1,currY1,currX2,currY2))
-        currX1= startX
-        currY1, =startY,
+            app.rectangleCoords.append((currX1, currY1, currX2, currY2))
+        currX1 = startX
+        currY1 = startY
         currX2 = startX+5
-        currY2= currY2+5
-        app.rectangleCoords.append((currX1,currY1,currX2,currY2))
+        currY2 = currY2+5
+        app.rectangleCoords.append((currX1, currY1, currX2, currY2))
 def pointInGrid(app, x, y):
     # return True if (x, y) is inside the grid defined by app.
     return ((app.margin <= x <= app.width-app.margin) and
             (app.margin <= y <= app.height-app.margin))
 
 def gameMode_timerFired(app):
-    if newBullet.fire == True:
-        app.bulletTime += 0.02
-    newBullet.weaponLocation(playerOneMove.angle, playerOneMove.power, app.bulletTime, newBullet.startX,newBullet.startY,app)
+    if playerOneMove.fire == True:
+        app.bulletTimeOne += 0.02
+    else: app.bulletTimeOne = 0
+    if playerTwoMove.fire == True:
+        app.bulletTimeTwo += 0.02
+    else: app.bulletTimeTwo = 0
+    newBullet.weaponLocation(playerOneMove.angle, playerOneMove.power, app.bulletTimeOne, newBullet.startX,newBullet.startY,app)
+    newBulletTwo.weaponLocation(playerTwoMove.angle, playerTwoMove.power, app.bulletTimeTwo, newBulletTwo.startX,newBulletTwo.startY,app)
     destroyTerrain(app)
-    damageTank(app)
     if playerTwo.health <= 0:
         app.mode = 'playerOneWin'
     if playerOne.health <= 0:
-        app.mode = 'playerTw0Win'
+        app.mode = 'playerTwoWin'
+    if playerOneMove.Move == True:
+        playerOneMove.executeMove(playerTwoMove)
+    if playerTwoMove.Move == True:
+        playerTwoMove.executeMove(playerOneMove)
 
 
 def gameMode_mousePressed(app, event):
@@ -143,33 +160,43 @@ def destroyTerrain(app):
 
 def gameMode_keyPressed(app, event):
     if (event.key == 'f'):
-        newBullet.fire = True
+        if playerOneMove.Move == True:
+            newBullet.fire = True
+            playerOneMove.fire = True
+        if playerTwoMove.Move == True:
+            newBulletTwo.fire = True
+            playerTwoMove.fire = True
     if (event.key == 'h'):
         app.mode = 'helpMode'
     if (event.key == 'Up'):
-        if playerOneMove.fire == False:
+        if playerOneMove.fire == False and playerOneMove.Move == True:
             playerOneMove.angle += 1
             print(playerOneMove.angle)
+        elif playerTwoMove.fire == False and playerTwoMove.Move == True:
+            playerTwoMove.angle += 1
+            print(playerTwoMove.angle)
     if (event.key == 'Down'):
-        if playerOneMove.fire == False:
+        if playerOneMove.fire == False and playerOneMove.Move == True:
             playerOneMove.angle -= 1
             print(playerOneMove.angle)
+        elif playerTwoMove.fire == False and playerTwoMove.Move == True:
+            playerTwoMove.angle -= 1
+            print(playerTwoMove.angle)
     if (event.key == 'w'):
-        if playerOneMove.fire == False:
+        if playerOneMove.fire == False and playerOneMove.Move == True:
             playerOneMove.power += 1
             print(playerOneMove.angle)
+        elif playerTwoMove.fire == False and playerTwoMove.Move == True:
+            playerTwoMove.power += 1
+            print(playerTwoMove.power)
     if (event.key == 's'):
         if playerOneMove.fire == False:
-            playerOneMove.angle -= 1
+            playerOneMove.power -= 1
             print(playerOneMove.angle)
+        elif playerTwoMove.fire == False and playerTwoMove.Move == True:
+            playerTwoMove.power -= 1
+            print(playerTwoMove.power)
 
-def damageTank(app):
-    x0,y0 = app.currX, app.currY
-    if (x0 > (playerTwo.x0) and x0 < playerTwo.x1  and
-            (y0 > playerTwo.y0) and y0 < playerTwo.y1):
-            playerTwo.health -= 200
-
-    return playerTwo.health
 
 
 def pOneWin_redrawAll(app, canvas):
@@ -208,21 +235,19 @@ def helpMode_keyPressed(app, event):
 ##########################################
 
 def appStarted(app):
+    app.playerOneTurn = True
     app.angle =(math.pi)
     app.mode = 'splashScreenMode'
-    app.rows = 4
-    app.cols = 8
-    app.margin = 5 
     app.selection = (-1, -1) 
     app.rectangleCoords = [(200,0,300,app.height)]
     app.destroyedTerrain = []
     app.weaponCoords = []
     app.baseWeaponR = 5
-    app.slope = 1
     app.weaponFired = False
     app.startX,app.startY = playerOne.x1,playerOne.y0
     app.currX,app.currY = app.startX,app.startY
-    app.bulletTime = 0
+    app.bulletTimeOne = 0
+    app.bulletTimeTwo = 0
     createTerrain(app)
 
 

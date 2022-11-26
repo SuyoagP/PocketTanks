@@ -2,6 +2,7 @@ import math
 from cmu_112_graphics import *
 
 
+
 class Weapon(App):
     #Found at https://stackoverflow.com/questions/2094658/how-do-i-declare-an-attribute-in-python-without-a-value
     damage = None
@@ -21,10 +22,10 @@ class Weapon(App):
             vy = 2 * power * math.sin(math.radians(angle))
             self.currX = x0 + vx * time
             self.currY = y0 - (vy * time - 0.5 * gravity * time ** 2)
-            print(self.currX, self.currY)
         if self.currX > app.width or self.currX < 0 or self.currY > app.height:
             self.currX = x0
             self.currY = y0
+
 
 
 
