@@ -1,3 +1,5 @@
+import random
+
 from Dependencies.cmu_112_graphics import *
 from Game.Move import *
 from Weapon import *
@@ -12,7 +14,7 @@ class Graphics:
         self.app.image2 = self.app.scaleImage(self.app.image1, 2 / 3)
         self.canvas.create_image(200, 200, image=ImageTk.PhotoImage(self.app.image2))
 
-    def createTerrain(self):
+    def updateTerrain(self):
         for coords in self.app.rectangleCoords:
             x1, y1, x2, y2 = coords
             self.canvas.create_rectangle(x1, y1, x2, y2, fill='green')
@@ -46,3 +48,20 @@ class Graphics:
                                     text=f'Power : {playerTwoMove.power}', font='Arial 16 bold', fill='black')
             self.canvas.create_text(self.app.width / 2 + self.app.width / 4, (self.app.width / 4) * 3, text=f'Angle {playerTwoMove.angle}',
                                     font='Arial 16 bold', fill='black')
+
+    @staticmethod
+    def createTerrain(app):
+        startPoint, startHeight = 0, app.height
+        endPoint, endHeight = app.width + 25, int(app.height * (random.randint(0, 6) / 10))
+
+        left, right = startPoint, startPoint + 25
+        for newRight in range(right, endPoint, 25):
+
+            top, bottom = app.height - 25, app.height
+            randHeight = int(app.height * (random.randint(0, 6) / 10))
+
+            for newTop in range(app.height, randHeight, -25):
+                bottom, top = top, newTop
+                app.rectangleCoords.append((left, top, right, bottom))
+
+            left, right = right, newRight + 25

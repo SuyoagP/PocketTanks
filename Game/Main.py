@@ -39,7 +39,7 @@ print(playerOneMove.Move == playerTwo)
 def gameMode_redrawAll(app, canvas):
     graphicsEngine = Graphics(app, canvas)
     graphicsEngine.createBackground()
-    graphicsEngine.createTerrain()
+    graphicsEngine.updateTerrain()
     graphicsEngine.createBulletRight(newBullet, 'red')
     graphicsEngine.createBulletLeft(newBulletTwo, 'blue')
     graphicsEngine.createTank(playerOne)
@@ -49,21 +49,7 @@ def gameMode_redrawAll(app, canvas):
 
 
 
-def createTerrain(app):
-    startPoint, startHeight = 0, app.height
-    endPoint, endHeight = app.width + 25, int(app.height * (random.randint(0, 6)/10))
 
-    left, right = startPoint, startPoint + 25
-    for newRight in range(right, endPoint, 25):
-
-        top, bottom = app.height - 25, app.height
-        randHeight = int(app.height * (random.randint(0, 6)/10))
-
-        for newTop in range(app.height, randHeight, -25):
-            bottom, top = top, newTop
-            app.rectangleCoords.append((left, top, right, bottom))
-
-        left, right = right, newRight + 25
 
 
 def gameMode_timerFired(app):
@@ -171,6 +157,7 @@ def helpMode_keyPressed(app, event):
     app.mode = 'gameMode'
 
 
+
 ##########################################
 # Main App
 ##########################################
@@ -194,7 +181,7 @@ def appStarted(app):
     app.currX,app.currY = app.startX,app.startY
     app.bulletTimeOne = 0
     app.bulletTimeTwo = 0
-    createTerrain(app)
+    Graphics.createTerrain(app)
 
 
 
