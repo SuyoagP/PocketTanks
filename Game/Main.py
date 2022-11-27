@@ -4,6 +4,7 @@ from Weapon import *
 from Game.Move import *
 import random
 import math
+from Graphics import *
 
 
 ##########################################
@@ -36,68 +37,18 @@ playerOneMove = Move(playerOne, playerTwo, newBullet,True, 45, 50, False)
 playerTwoMove = Move(playerTwo, playerOne, newBulletTwo, False, 45, 50, False)
 print(playerOneMove.Move == playerTwo)
 def gameMode_redrawAll(app, canvas):
-    canvas.create_image(200, 200, image=ImageTk.PhotoImage(app.image2))
-
-    for coords in app.rectangleCoords:
-        x1,y1,x2,y2 = coords
-        canvas.create_rectangle(x1,y1,x2,y2, fill='green')
-    for radius in app.destroyedTerrain:
-        x,y = radius
-        r = app.baseWeaponR 
-        canvas.create_oval(x-r,y-r,x+r,y+r, fill = 'cyan')
-    canvas.create_oval(newBullet.currX, newBullet.currY,newBullet.currX+5,newBullet.currY+2,
-                            fill = 'purple')
-    canvas.create_oval(newBulletTwo.currX-5, newBulletTwo.currY,newBulletTwo.currX,newBulletTwo.currY+2,
-                            fill = 'yellow')
-    #canvas.create_image(playerOne.x0, playerOne.y0, image=ImageTk.PhotoImage(app.imageTankOne))
-    canvas.create_rectangle(playerOne.x0,playerOne.y0,playerOne.x1,playerOne.y1,
-                            fill = playerOne.color)
-    canvas.create_rectangle(playerTwo.x0,playerTwo.y0,playerTwo.x1,playerTwo.y1,
-                            fill = playerTwo.color)
-                
-    canvas.create_text(app.width/10+15, app.width/8, 
-                    text=f'Player One Health \n {playerOne.health}',
-                       font='Arial 16 bold', fill='black')
-    canvas.create_text(app.width/10+400, app.width/8,
-                    text=f'Player Two Health \n {playerTwo.health}',
-                       font='Fixedsys 16 bold', fill='black')
-    if playerOneMove.Move == True:
-        canvas.create_text(app.width/2 - app.width/4, (app.width/4)*3, text=f'Power : {playerOneMove.power}', font='Arial 16 bold', fill='black')
-        canvas.create_text(app.width / 2 + app.width / 4 , (app.width / 4) * 3, text=f'Angle {playerOneMove.angle}', font='Arial 16 bold', fill='black')
-    elif playerTwoMove.Move == True:
-        canvas.create_text(app.width / 2 - app.width / 4, (app.width / 4) * 3, text=f'Power : {playerTwoMove.power}',font='Arial 16 bold', fill='black')
-        canvas.create_text(app.width / 2 + app.width / 4, (app.width / 4) * 3, text=f'Angle {playerTwoMove.angle}',font='Arial 16 bold', fill='black')
+    graphicsEngine = Graphics(app, canvas)
+    graphicsEngine.createBackground()
+    graphicsEngine.createTerrain()
+    graphicsEngine.createBulletRight(newBullet, 'red')
+    graphicsEngine.createBulletLeft(newBulletTwo, 'blue')
+    graphicsEngine.createTank(playerOne)
+    graphicsEngine.createTank(playerTwo)
+    graphicsEngine.createPlayerHealth(15, playerOne, 'One')
+    graphicsEngine.createPlayerHealth(400, playerTwo, 'Two')
 
 
-def getCellBounds(app, row, col):
-    # aka "modelToView"
-    # returns (x0, y0, x1, y1) corners/bounding box of given cell in grid
-    gridWidth  = app.width - 2*app.margin
-    gridHeight = app.height - 2*app.margin
-    cellWidth = gridWidth / app.cols
-    cellHeight = gridHeight / app.rows
-    x0 = app.margin + col * cellWidth
-    x1 = app.margin + (col+1) * cellWidth
-    y0 = app.margin + row * cellHeight
-    y1 = app.margin + (row+1) * cellHeight
-    return (x0, y0, x1, y1)
-def getCell(app, x, y):
-    # aka "viewToModel"
-    # return (row, col) in which (x, y) occurred or (-1, -1) if outside grid.
-    if (not pointInGrid(app, x, y)):
-        return (-1, -1)
-    gridWidth  = app.width - 2*app.margin
-    gridHeight = app.height - 2*app.margin
-    cellWidth  = gridWidth / app.cols
-    cellHeight = gridHeight / app.rows
 
-    # Note: we have to use int() here and not just // because
-    # row and col cannot be floats and if any of x, y, app.margin,
-    # cellWidth or cellHeight are floats, // would still produce floats.
-    row = int((y - app.margin) / cellHeight)
-    col = int((x - app.margin) / cellWidth)
-
-    return (row, col)
 def createTerrain(app):
     startPoint, startHeight = 0, app.height
     endPoint, endHeight = app.width + 25, int(app.height * (random.randint(0, 6)/10))
@@ -114,10 +65,6 @@ def createTerrain(app):
 
         left, right = right, newRight + 25
 
-def pointInGrid(app, x, y):
-    # return True if (x, y) is inside the grid defined by app.
-    return ((app.margin <= x <= app.width-app.margin) and
-            (app.margin <= y <= app.height-app.margin))
 
 def gameMode_timerFired(app):
     if playerOneMove.fire == True:
