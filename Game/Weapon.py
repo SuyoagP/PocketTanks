@@ -1,7 +1,5 @@
 import math
-from cmu_112_graphics import *
-
-
+from Dependencies.cmu_112_graphics import *
 
 class Weapon(App):
     #Found at https://stackoverflow.com/questions/2094658/how-do-i-declare-an-attribute-in-python-without-a-value
@@ -25,9 +23,6 @@ class Weapon(App):
         if self.currX > app.width or self.currX < 0 or self.currY > app.height:
             self.currX = x0
             self.currY = y0
-
-
-
 
 
 class Bullet(Weapon):

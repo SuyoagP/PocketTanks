@@ -1,9 +1,7 @@
 # This demos using modes (aka screens).
 
-from cmu_112_graphics import *
-from Tank import Tank
 from Weapon import *
-from Move import *
+from Game.Move import *
 import random
 import math
 
@@ -69,10 +67,6 @@ def gameMode_redrawAll(app, canvas):
     elif playerTwoMove.Move == True:
         canvas.create_text(app.width / 2 - app.width / 4, (app.width / 4) * 3, text=f'Power : {playerTwoMove.power}',font='Arial 16 bold', fill='black')
         canvas.create_text(app.width / 2 + app.width / 4, (app.width / 4) * 3, text=f'Angle {playerTwoMove.angle}',font='Arial 16 bold', fill='black')
-
-
-
-
 
 
 def getCellBounds(app, row, col):
@@ -237,9 +231,9 @@ def helpMode_keyPressed(app, event):
 def appStarted(app):
     # Image https://opengameart.org/content/morning-sunrise-background
     # Mthod found via Course Notes
-    app.image1 = app.loadImage('Sunrise.png')
+    app.image1 = app.loadImage('../Assets/Sunrise.png')
     app.image2 = app.scaleImage(app.image1, 2 / 3)
-    app.imageTankOne = app.loadImage('TankOne.jpeg')
+    app.imageTankOne = app.loadImage('../Assets/TankOne.jpeg')
     app.playerOneTurn = True
     app.angle =(math.pi)
     app.mode = 'splashScreenMode'
