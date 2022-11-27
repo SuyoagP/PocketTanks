@@ -42,7 +42,7 @@ def gameMode_redrawAll(app, canvas):
 
     for coords in app.rectangleCoords:
         x1,y1,x2,y2 = coords
-        canvas.create_rectangle(x1,y1,x2,y2, fill='light green')
+        canvas.create_rectangle(x1,y1,x2,y2, fill='green')
     for radius in app.destroyedTerrain:
         x,y = radius
         r = app.baseWeaponR 
@@ -105,26 +105,20 @@ def getCell(app, x, y):
 
     return (row, col)
 def createTerrain(app):
-    iterations = 1
-    firstY = app.height*(random.randint(0,6)/10)
-    startX,startY = 0, firstY
-    endX,endY = app.width, app.height
-    currX1,currY1,currX2,currY2= startX, startY, startX+25, startY+25
-    app.rectangleCoords.append((currX1,currY1,currX2,currY2))
-    nextY = startY
-    for x in range(int(startX),endX//1,25):
-        nextY = nextY + (50 * random.randint(1, 4))
-        for y in range(endY,int(startY), -25):
-            currX1 = currX1
-            currY1 = currY1 + 25
-            currX2 = currX2
-            currY2 = currY2 + 25
-            app.rectangleCoords.append((currX1, currY1, currX2, currY2))
-            iterations += 1
-            print(app.rectangleCoords)
-        currX1,currY1,currX2,currY2= currX1 + 25, startY, currX2 + 25, startY+25
+    startPoint, startHeight = 0, app.height
+    endPoint, endHeight = app.width + 25, int(app.height * (random.randint(0, 6)/10))
 
+    left, right = startPoint, startPoint + 25
+    for newRight in range(right, endPoint, 25):
 
+        top, bottom = app.height - 25, app.height
+        randHeight = int(app.height * (random.randint(0, 6)/10))
+
+        for newTop in range(app.height, randHeight, -25):
+            bottom, top = top, newTop
+            app.rectangleCoords.append((left, top, right, bottom))
+
+        left, right = right, newRight + 25
 
 def pointInGrid(app, x, y):
     # return True if (x, y) is inside the grid defined by app.
