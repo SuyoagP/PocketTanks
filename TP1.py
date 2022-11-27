@@ -7,6 +7,7 @@ from Move import *
 import random
 import math
 
+
 ##########################################
 # Splash Screen Mode
 ##########################################
@@ -37,7 +38,7 @@ playerOneMove = Move(playerOne, playerTwo, newBullet,True, 45, 50, False)
 playerTwoMove = Move(playerTwo, playerOne, newBulletTwo, False, 45, 50, False)
 print(playerOneMove.Move == playerTwo)
 def gameMode_redrawAll(app, canvas):
-    canvas.create_rectangle(0,0,app.width,app.height, fill='blue')
+    canvas.create_image(200, 200, image=ImageTk.PhotoImage(app.image2))
 
     for coords in app.rectangleCoords:
         x1,y1,x2,y2 = coords
@@ -50,7 +51,7 @@ def gameMode_redrawAll(app, canvas):
                             fill = 'purple')
     canvas.create_oval(newBulletTwo.currX-5, newBulletTwo.currY,newBulletTwo.currX,newBulletTwo.currY+2,
                             fill = 'yellow')
-    
+    #canvas.create_image(playerOne.x0, playerOne.y0, image=ImageTk.PhotoImage(app.imageTankOne))
     canvas.create_rectangle(playerOne.x0,playerOne.y0,playerOne.x1,playerOne.y1,
                             fill = playerOne.color)
     canvas.create_rectangle(playerTwo.x0,playerTwo.y0,playerTwo.x1,playerTwo.y1,
@@ -61,13 +62,14 @@ def gameMode_redrawAll(app, canvas):
                        font='Arial 16 bold', fill='black')
     canvas.create_text(app.width/10+400, app.width/8,
                     text=f'Player Two Health \n {playerTwo.health}',
-                       font='Arial 16 bold', fill='black')
-    canvas.create_text(app.width/12 + 15, app.width/4,
-                    text=f'Power : {playerOneMove.power}' ,
-                       font='Arial 16 bold', fill='black')
-    canvas.create_text(app.width/12 + 15 , app.width / 2,
-                       text=f'Angle \n {playerOneMove.angle}',
-                       font='Arial 16 bold', fill='black')
+                       font='Fixedsys 16 bold', fill='black')
+    if playerOneMove.Move == True:
+        canvas.create_text(app.width/2 - app.width/4, (app.width/4)*3, text=f'Power : {playerOneMove.power}', font='Arial 16 bold', fill='black')
+        canvas.create_text(app.width / 2 + app.width / 4 , (app.width / 4) * 3, text=f'Angle {playerOneMove.angle}', font='Arial 16 bold', fill='black')
+    elif playerTwoMove.Move == True:
+        canvas.create_text(app.width / 2 - app.width / 4, (app.width / 4) * 3, text=f'Power : {playerTwoMove.power}',font='Arial 16 bold', fill='black')
+        canvas.create_text(app.width / 2 + app.width / 4, (app.width / 4) * 3, text=f'Angle {playerTwoMove.angle}',font='Arial 16 bold', fill='black')
+
 
 
 
@@ -103,23 +105,27 @@ def getCell(app, x, y):
 
     return (row, col)
 def createTerrain(app):
-    startX,startY = 0, 0.8*app.height
+    iterations = 1
+    firstY = app.height*(random.randint(0,6)/10)
+    startX,startY = 0, firstY
     endX,endY = app.width, app.height
-    currX1,currY1,currX2,currY2= startX, startY, startX+5, startY+5
+    currX1,currY1,currX2,currY2= startX, startY, startX+25, startY+25
     app.rectangleCoords.append((currX1,currY1,currX2,currY2))
-    print(int(startY),endY)
-    for y in range(int(startY),endY//1,5):
-        for x in range(startX,endX,5):
-            currX1 = currX1+5
-            currY1 = currY1
-            currX2 = currX2+5
-            currY2 = currY2
+    nextY = startY
+    for x in range(int(startX),endX//1,25):
+        nextY = nextY + (50 * random.randint(1, 4))
+        for y in range(endY,int(startY), -25):
+            currX1 = currX1
+            currY1 = currY1 + 25
+            currX2 = currX2
+            currY2 = currY2 + 25
             app.rectangleCoords.append((currX1, currY1, currX2, currY2))
-        currX1 = startX
-        currY1 = startY
-        currX2 = startX+5
-        currY2 = currY2+5
-        app.rectangleCoords.append((currX1, currY1, currX2, currY2))
+            iterations += 1
+            print(app.rectangleCoords)
+        currX1,currY1,currX2,currY2= currX1 + 25, startY, currX2 + 25, startY+25
+
+
+
 def pointInGrid(app, x, y):
     # return True if (x, y) is inside the grid defined by app.
     return ((app.margin <= x <= app.width-app.margin) and
@@ -235,11 +241,16 @@ def helpMode_keyPressed(app, event):
 ##########################################
 
 def appStarted(app):
+    # Image https://opengameart.org/content/morning-sunrise-background
+    # Mthod found via Course Notes
+    app.image1 = app.loadImage('Sunrise.png')
+    app.image2 = app.scaleImage(app.image1, 2 / 3)
+    app.imageTankOne = app.loadImage('TankOne.jpeg')
     app.playerOneTurn = True
     app.angle =(math.pi)
     app.mode = 'splashScreenMode'
     app.selection = (-1, -1) 
-    app.rectangleCoords = [(200,0,300,app.height)]
+    app.rectangleCoords = []
     app.destroyedTerrain = []
     app.weaponCoords = []
     app.baseWeaponR = 5
