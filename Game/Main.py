@@ -5,6 +5,7 @@ from Game.Move import *
 import random
 import math
 from Graphics import *
+from Params import *
 
 
 ##########################################
@@ -28,14 +29,7 @@ def splashScreenMode_keyPressed(app, event):
 ##########################################
 # Game Mode
 ##########################################
-playerOne = Tank('red',100,True,50,390,75,400)
-playerTwo = Tank('purple',100,True,285,390,310,400)
-newBullet = Bullet(playerOne.getx1(),playerOne.gety0(),45,50, False, 76,390)
-newBulletTwo = Bullet(playerTwo.getx0(),playerTwo.gety0(),45,50, False, 285,390)
-print(playerTwo.getx0(),playerTwo.gety0())
-playerOneMove = Move(playerOne, playerTwo, newBullet,True, 45, 50, False)
-playerTwoMove = Move(playerTwo, playerOne, newBulletTwo, False, 45, 50, False)
-print(playerOneMove.Move == playerTwo)
+
 def gameMode_redrawAll(app, canvas):
     graphicsEngine = Graphics(app, canvas)
     graphicsEngine.createBackground()
@@ -182,9 +176,6 @@ def appStarted(app):
     app.bulletTimeOne = 0
     app.bulletTimeTwo = 0
     Graphics.createTerrain(app)
-
-
-
 
 
 runApp(width=600, height=500)
