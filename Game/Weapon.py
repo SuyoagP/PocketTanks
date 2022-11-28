@@ -24,6 +24,18 @@ class Weapon(App):
             self.currX = x0
             self.currY = y0
 
+    def destroyTerrain(self, app):
+        print(self.terrainDestroy)
+        if self.terrainDestroy == True:
+            for block in app.rectangleCoords:
+                print(block)
+                x0, y0, x1, y1 = block
+                if (self.currX > min(x0, x1) and self.currX < max(x0, x1)) and (self.currY > min(y0, y1) and self.currY < max(y0, y1)):
+                    app.rectangleCoords.remove(block)
+
+
+
+
 
 class Bullet(Weapon):
     damage = 10

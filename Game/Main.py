@@ -4,22 +4,32 @@ from Weapon import *
 from Game.Move import *
 import random
 import math
+from tkinter import Tk, font
 from Graphics import *
 from Params import *
 
 
-##########################################
-# Splash Screen Mode
-##########################################
+
+#Template Taken from CMU 112 Website
 
 def splashScreenMode_redrawAll(app, canvas):
-    font = 'Arial 26 bold'
-    canvas.create_text(app.width/2, 150, text='Welcome to Pocket Tanks',
-                       font=font, fill='black')
+    #image found here: https://www.google.com/url?sa=i&url=https%3A%2F%2Fplaceit.net%2Fc%2Fvideos%2Fstages%2Ftwitch-offline-screen-video-maker-with-an-8-bit-style-and-city-graphics-3853&psig=AOvVaw1JVAZw1M26CXq3YOnky7du&ust=1669676524573000&source=images&cd=vfe&ved=0CBAQ3YkBahcKEwiwzLjyu8_7AhUAAAAAHQAAAAAQBA
+    backGroundImage = app.startScreenBackGroundImage
+    backGroundImage = app.scaleImage(backGroundImage, 2/3)
+    canvas.create_image(app.width/2, app.height/4, image=ImageTk.PhotoImage(backGroundImage))
+
+    buttonleft,buttonTop,buttonRight,buttonBottom = (app.width/4, 6*app.height/10,3*app.width/4,7*app.width/10)
+    font = 'Arial 26'
     canvas.create_text(app.width/2, 200, text='This is the start Screen!',
                        font=font, fill='black')
     canvas.create_text(app.width/2, 250, text='Press p for the game!',
                        font=font, fill='black')
+    canvas.create_rectangle(buttonleft, buttonTop, buttonRight, buttonBottom, fill='blue', outline='black')
+
+
+
+
+
 
 def splashScreenMode_keyPressed(app, event):
     if (event.key == 'p'):    
@@ -35,7 +45,7 @@ def gameMode_redrawAll(app, canvas):
     graphicsEngine.createBackground()
     graphicsEngine.updateTerrain()
     graphicsEngine.createBulletRight(newBullet, 'red')
-    graphicsEngine.createBulletLeft(newBulletTwo, 'blue')
+    graphicsEngine.createBulletLeft(newWeaponTwo, 'blue')
     graphicsEngine.createTank(playerOne)
     graphicsEngine.createTank(playerTwo)
     graphicsEngine.createPlayerHealth(15, playerOne, 'One')
@@ -43,7 +53,8 @@ def gameMode_redrawAll(app, canvas):
 
 
 
-
+newBullet = Bullet(playerOne.getx1(), playerOne.gety0(), 45, 50, False, 76, 390)
+playerOneMove = Move(playerOne, playerTwo, newBullet, True, 45, 50, False)
 
 
 def gameMode_timerFired(app):
@@ -53,8 +64,8 @@ def gameMode_timerFired(app):
     if playerTwoMove.fire == True:
         app.bulletTimeTwo += 0.02
     else: app.bulletTimeTwo = 0
-    newBullet.weaponLocation(playerOneMove.angle, playerOneMove.power, app.bulletTimeOne, newBullet.startX,newBullet.startY,app)
-    newBulletTwo.weaponLocation(playerTwoMove.angle, playerTwoMove.power, app.bulletTimeTwo, newBulletTwo.startX,newBulletTwo.startY,app)
+    newBullet.weaponLocation(playerOneMove.angle, playerOneMove.power, app.bulletTimeOne, newBullet.startX, newBullet.startY, app)
+    newWeaponTwo.weaponLocation(playerTwoMove.angle, playerTwoMove.power, app.bulletTimeTwo, newWeaponTwo.startX, newWeaponTwo.startY, app)
     destroyTerrain(app)
     if playerTwo.health <= 0:
         app.mode = 'playerOneWin'
@@ -62,8 +73,10 @@ def gameMode_timerFired(app):
         app.mode = 'playerTwoWin'
     if playerOneMove.Move == True:
         playerOneMove.executeMove(playerTwoMove)
+        newBullet.destroyTerrain(app)
     if playerTwoMove.Move == True:
         playerTwoMove.executeMove(playerOneMove)
+    newBullet.destroyTerrain(app)
 
 
 def gameMode_mousePressed(app, event):
@@ -79,13 +92,14 @@ def destroyTerrain(app):
                 app.rectangleCoords.remove(block)
     return app.rectangleCoords
 
+
 def gameMode_keyPressed(app, event):
     if (event.key == 'f'):
         if playerOneMove.Move == True:
             newBullet.fire = True
             playerOneMove.fire = True
         if playerTwoMove.Move == True:
-            newBulletTwo.fire = True
+            newWeaponTwo.fire = True
             playerTwoMove.fire = True
     if (event.key == 'h'):
         app.mode = 'helpMode'
@@ -117,6 +131,10 @@ def gameMode_keyPressed(app, event):
         elif playerTwoMove.fire == False and playerTwoMove.Move == True:
             playerTwoMove.power -= 1
             print(playerTwoMove.power)
+    if (event.key == 'p') and playerOneMove.Move == True:
+            newBullet = MountainMover(playerOne.getx1(), playerOne.gety0(), 45, 50, False, 76, 390)
+            print('mountain')
+            print(newBullet.terrainDestroy)
 
 
 
@@ -159,6 +177,7 @@ def helpMode_keyPressed(app, event):
 def appStarted(app):
     # Image https://opengameart.org/content/morning-sunrise-background
     # Mthod found via Course Notes
+    app.startScreenBackGroundImage = app.loadImage('../Assets/Pocket-Tanks.png')
     app.image1 = app.loadImage('../Assets/Sunrise.png')
     app.image2 = app.scaleImage(app.image1, 2 / 3)
     app.imageTankOne = app.loadImage('../Assets/TankOne.jpeg')

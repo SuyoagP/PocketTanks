@@ -16,18 +16,10 @@ class Move:
     def changePower(self, dPower):
         self.power += dPower
     def executeMove(self,other):
+
         x0,y0 = self.weaponType.currX, self.weaponType.currY
         if self.Move == True:
             if (x0 > (self.victim.x0) and x0 < self.victim.x1 and (y0 > self.victim.y0) and y0 < self.victim.y1):
                 self.victim.damage(self.weaponType)
                 self.Move = False
                 other.Move = True
-
-
-
-
-
-
-
-
-
