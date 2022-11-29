@@ -10,6 +10,7 @@ if ((sys.version_info[0] != 3) or (sys.version_info[1] < 6)):
 
 # Track version and file update timestamp
 import datetime
+import copy
 MAJOR_VERSION = 0
 MINOR_VERSION = 9.2 # version 0.9.2
 LAST_UPDATED  = datetime.date(year=2022, month=3, day=29)
@@ -415,6 +416,7 @@ class App(object):
         try:
             app.redrawAll(app._canvas)
             hash2 = getHash(app) if app._mvcCheck else None
+            # tempcopy = copy.deepcopy(app)
             if (hash1 != hash2):
                 app._mvcViolation('you may not change the app state (the model) in redrawAll (the view)')
         finally:

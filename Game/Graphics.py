@@ -3,6 +3,7 @@ import random
 from Dependencies.cmu_112_graphics import *
 from Game.Move import *
 from Weapon import *
+from Player import *
 
 class Graphics:
     #https://www.geeksforgeeks.org/class-method-vs-static-method-python/ found here
@@ -11,7 +12,6 @@ class Graphics:
         self.app = app
 
     def createBackground(self):
-        self.app.image2 = self.app.scaleImage(self.app.image1, 2 / 3)
         self.canvas.create_image(200, 200, image=ImageTk.PhotoImage(self.app.image2))
 
     def updateTerrain(self):
@@ -33,20 +33,20 @@ class Graphics:
 
     def createPlayerHealth(self, displacement, player, playerText):
         self.canvas.create_text(self.app.width / 10 + displacement, self.app.width / 8,
-                                text=f'Player {playerText} Health \n {player.health}',
+                                text=f'Player {playerText} Health \n {player}',
                                 font='Arial 16 bold', fill='black')
 
-    def createPlayerPowerAngle(self, playerOneMove: Move, playerTwoMove: Move):
-        if playerOneMove.Move == True:
+    def createPlayerPowerAngle(self, player1, player2):
+        if player1.turn == True:
             self.canvas.create_text(self.app.width / 2 - self.app.width / 4, (self.app.width / 4) * 3,
-                                    text=f'Power : {playerOneMove.power}', font='Arial 16 bold', fill='black')
-            self.canvas.create_text(self.app.width / 2 + self.app.width / 4, (self.app.width / 4) * 3, text=f'Angle {playerOneMove.angle}',
+                                    text=f'Power : {player1.getWeapon().power}', font='Arial 16 bold', fill='black')
+            self.canvas.create_text(self.app.width / 2 + self.app.width / 4, (self.app.width / 4) * 3, text=f'Angle {player1.getWeapon().angle}',
                                     font='Arial 16 bold', fill='black')
 
-        elif playerTwoMove.Move == True:
+        elif player2.turn == True:
             self.canvas.create_text(self.app.width / 2 - self.app.width / 4, (self.app.width / 4) * 3,
-                                    text=f'Power : {playerTwoMove.power}', font='Arial 16 bold', fill='black')
-            self.canvas.create_text(self.app.width / 2 + self.app.width / 4, (self.app.width / 4) * 3, text=f'Angle {playerTwoMove.angle}',
+                                    text=f'Power : {player2.getWeapon().power}', font='Arial 16 bold', fill='black')
+            self.canvas.create_text(self.app.width / 2 + self.app.width / 4, (self.app.width / 4) * 3, text=f'Angle {player2.getWeapon().angle}',
                                     font='Arial 16 bold', fill='black')
 
     @staticmethod
@@ -58,7 +58,7 @@ class Graphics:
         for newRight in range(right, endPoint, 25):
 
             top, bottom = app.height - 25, app.height
-            randHeight = int(app.height * (random.randint(0, 6) / 10))
+            randHeight = endHeight + int(app.height * (random.randint(0, 6) / 10))
 
             for newTop in range(app.height, randHeight, -25):
                 bottom, top = top, newTop

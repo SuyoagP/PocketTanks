@@ -21,7 +21,6 @@ class Tank(object):
         self.y1 += y1Offset
 
 
-
     def getHealth(self):
         return self.health
 
