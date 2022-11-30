@@ -1,4 +1,5 @@
 from Weapon import Weapon
+
 class Tank(object):
 
     def __init__(self, color, health, player, x0, y0, x1, y1):
@@ -41,3 +42,6 @@ class Tank(object):
 
     def gety1(self):
         return self.y1
+
+
+

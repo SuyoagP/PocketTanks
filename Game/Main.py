@@ -17,7 +17,9 @@ from Params import *
 ##########################################
 def appStarted(app):
     # Image https://opengameart.org/content/morning-sunrise-background
-    # Mthod found via Course Notes
+    # Method found via Course Notes
+    app.timerDelay = 0
+    app.TankOneY, app.TankTwoY = app.height, app.height
     app.startScreenBackGroundImage = app.loadImage('../Assets/Pocket-Tanks.png')
     app.image1 = app.loadImage('../Assets/Sunrise.png')
     app.image2 = app.scaleImage(app.image1, 2 / 3)
@@ -25,7 +27,6 @@ def appStarted(app):
     app.playerOneTurn = True
     app.angle =(math.pi)
     app.mode = 'splashScreenMode'
-    app.selection = (-1, -1)
     app.rectangleCoords = []
     app.destroyedTerrain = []
     app.weaponCoords = []
@@ -40,6 +41,7 @@ def appStarted(app):
 
 
 
+
 def splashScreenMode_redrawAll(app, canvas):
     #image found here: https://www.google.com/url?sa=i&url=https%3A%2F%2Fplaceit.net%2Fc%2Fvideos%2Fstages%2Ftwitch-offline-screen-video-maker-with-an-8-bit-style-and-city-graphics-3853&psig=AOvVaw1JVAZw1M26CXq3YOnky7du&ust=1669676524573000&source=images&cd=vfe&ved=0CBAQ3YkBahcKEwiwzLjyu8_7AhUAAAAAHQAAAAAQBA
     backGroundImage = app.startScreenBackGroundImage
@@ -47,11 +49,9 @@ def splashScreenMode_redrawAll(app, canvas):
     canvas.create_image(app.width/2, app.height/4, image=ImageTk.PhotoImage(backGroundImage))
 
     buttonleft,buttonTop,buttonRight,buttonBottom = (app.width/4, 6*app.height/10,3*app.width/4,7*app.width/10)
-    font = 'Arial 26'
-    canvas.create_text(app.width/2, 200, text='This is the start Screen!',
-                       font=font, fill='black')
+    canvas.create_text(app.width / 2, 200, text='This is the start Screen!',  fill = 'black')
     canvas.create_text(app.width/2, 250, text='Press p for the game!',
-                       font=font, fill='black')
+                       font = "Fixedsys 24 bold", fill='black')
     canvas.create_rectangle(buttonleft, buttonTop, buttonRight, buttonBottom, fill='blue', outline='black')
 
 
@@ -85,63 +85,59 @@ def gameMode_redrawAll(app, canvas):
 
 
 def gameMode_timerFired(app):
+    app.timerDelay += 1
+    if app.timerDelay >= 0.0001:
+        app.timerDelay = 0
 
-    if (player1.getTurn() == True and player1.getLockedTurn() == True):
-        print(player1.getWeapon().hit)
-
-        player1.getWeapon().weaponFireOne(player1.getWeapon().angle, player1.getWeapon().power, 0, player1.getTank().x1, player1.getTank().y0, app, player2.getTank().x0,player2.getTank().y0,player2.getTank().x1, player2.getTank().y1)
-
-        if (player1.getWeapon().outOfBounds == True or player1.getWeapon().hit == True):
-
-            if player1.getWeapon().hit == True:
-                print("hitter")
-                player2.getTank().health -= player1.getWeapon().damage
-                print(player2.getTank().health)
+        if (player1.getTurn() == True and player1.getLockedTurn() == True):
 
 
-            player1.getWeapon().outOfBounds = False
-            player1.getWeapon().hit = False
+            player1.getWeapon().weaponFireOne(player1.getWeapon().angle, player1.getWeapon().power, 0, player1.getTank().x1, player1.getTank().y0, app, player2.getTank().x0,player2.getTank().y0,player2.getTank().x1, player2.getTank().y1)
 
-            player1.setLockedTurn(False)
-            player1.setTurn(False)
-            player2.setTurn(True)
+            if (player1.getWeapon().outOfBounds == True or player1.getWeapon().tankHit == True):
 
-    elif(player2.getTurn() == True and player2.getLockedTurn() == True):
-        player2.getWeapon().weaponFireTwo(player2.getWeapon().angle, player2.getWeapon().power, 0, player2.getTank().x0, player2.getTank().y0, app, player1.getTank().x0,player1.getTank().y0,player1.getTank().x1, player1.getTank().y1)
-
-        if (player2.getWeapon().outOfBounds == True or player2.getWeapon().hit == True):
+                if player1.getWeapon().tankHit == True:
+                    print("hitter")
+                    player2.getTank().health -= player1.getWeapon().damage
+                    print(player2.getTank().health)
 
 
-            if player2.getWeapon().hit == True:
-                player1.getTank().health -= player2.getWeapon().damage
+                player1.getWeapon().outOfBounds = False
+                player1.getWeapon().tankHit = False
 
-            player2.getWeapon().outOfBounds = False
-            player2.getWeapon().hit = False
+                player1.setLockedTurn(False)
+                player1.setTurn(False)
+                player2.setTurn(True)
 
-            player2.setLockedTurn(False)
-            player2.setTurn(False)
-            player1.setTurn(True)
+        elif(player2.getTurn() == True and player2.getLockedTurn() == True):
+            player2.getWeapon().weaponFireTwo(player2.getWeapon().angle, player2.getWeapon().power, 0, player2.getTank().x0, player2.getTank().y0, app, player1.getTank().x0,player1.getTank().y0,player1.getTank().x1, player1.getTank().y1)
+
+            if (player2.getWeapon().outOfBounds == True or player2.getWeapon().tankHit == True):
+
+
+                if player2.getWeapon().tankHit == True:
+                    player1.getTank().health -= player2.getWeapon().damage
+
+                player2.getWeapon().outOfBounds = False
+                player2.getWeapon().tankHit = False
+
+                player2.setLockedTurn(False)
+                player2.setTurn(False)
+                player1.setTurn(True)
 
 
 
     if player2.getTank().health <= 0:
-        app.mode = 'playerOneWin'
+        app.mode = 'pOneWin'
     elif player1.getTank().health <= 0:
-        app.mode = 'playerTwoWin'
+        app.mode = 'pTwoWin'
 
 
 def gameMode_mousePressed(app, event):
     app.cx = event.x
     app.cy = event.y
     app.destroyedTerrain.append((app.cx,app.cy))
-def destroyTerrain(app):
-    for block in app.rectangleCoords:
-        x0,y0,x1,y1 = block
-        if (app.currX > min(x0,x1) 
-        and app.currX < max(x0,x1)) and (app.currY > 
-                min(y0,y1) and app.currY < max(y0,y1)):
-                app.rectangleCoords.remove(block)
-    return app.rectangleCoords
+
 
 
 def gameMode_keyPressed(app, event):
@@ -217,19 +213,35 @@ def gameMode_keyPressed(app, event):
             print("MW")
         elif (player2.turn == True):
             player2.weapon = MagicWall(player2.getTank().getx1(), player2.getTank().gety0(), 45, 50, False, 285, 390)
-
+##########################################
+# Player Two Win Screen
+##########################################
 def pOneWin_redrawAll(app, canvas):
     font = 'Arial 26 bold'
-    canvas.create_text(app.width/2, 150, text='Player One Win',
+    canvas.create_text(app.width/2, 150, text='Player One Wins',
                        font=font, fill='black')
-    canvas.create_text(app.width/2, 250, text='(Insert helpful message here)',
+    canvas.create_text(app.width/2, 250, text='Congrats!',
                        font=font, fill='black')
     canvas.create_text(app.width/2, 350,
                         text='Press any key to return to the game!',
                        font=font, fill='black')
-
-def helpMode_keyPressed(app, event):
+def pOneWin_keyPressed(app, event):
     app.mode = 'splashScreenMode'
+##########################################
+# Player Two Win Screen
+##########################################
+def pTwoWin_redrawAll(app, canvas):
+    font = 'Arial 26 bold'
+    canvas.create_text(app.width/2, 150, text='Player Two Wins!',
+                       font=font, fill='black')
+    canvas.create_text(app.width/2, 250, text='Congrats!',
+                       font=font, fill='black')
+    canvas.create_text(app.width/2, 350,
+                        text='Press any key to return to the game!',
+                       font=font, fill='black')
+def pTwoWin_keyPressed(app, event):
+    app.mode = 'splashScreenMode'
+
 
 ##########################################
 # Help Mode

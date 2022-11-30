@@ -1,9 +1,11 @@
 from Game.Player import Player
 from Game.Tank import Tank
+from Graphics import *
 from Game.Weapon import Bullet
 
-p1Tank = Tank('red', 20, True, 50, 390, 75, 400)
-p2Tank = Tank('purple', 20, True, 285, 390, 310, 400)
+
+p1Tank = Tank('red', 20, True, 50, 190, 75, 200)
+p2Tank = Tank('purple', 20, True, 200, 390, 225, 400)
 
 player1 = Player(
     tank=p1Tank,
