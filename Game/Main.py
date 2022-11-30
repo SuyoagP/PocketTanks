@@ -19,6 +19,7 @@ def appStarted(app):
     # Image https://opengameart.org/content/morning-sunrise-background
     # Method found via Course Notes
     app.timerDelay = 0
+    app.destroyedTerrain = []
     app.TankOneY, app.TankTwoY = app.height, app.height
     app.startScreenBackGroundImage = app.loadImage('../Assets/Pocket-Tanks.png')
     app.image1 = app.loadImage('../Assets/Sunrise.png')
