@@ -90,7 +90,7 @@ def gameMode_timerFired(app):
 
             player1.getWeapon().weaponFireOne(player1.getWeapon().angle, player1.getWeapon().power, 0, player1.getTank().x1, player1.getTank().y0, app, player2.getTank().x0,player2.getTank().y0,player2.getTank().x1, player2.getTank().y1)
 
-            if (player1.getWeapon().outOfBounds == True or player1.getWeapon().tankHit == True):
+            if (player1.getWeapon().outOfBounds == True or player1.getWeapon().tankHit == True or player1.getWeapon().terrainHit == True):
 
                 if player1.getWeapon().tankHit == True:
                     print("hitter")
@@ -100,15 +100,20 @@ def gameMode_timerFired(app):
 
                 player1.getWeapon().outOfBounds = False
                 player1.getWeapon().tankHit = False
+                player1.getWeapon().terrainHit = False
 
                 player1.setLockedTurn(False)
                 player1.setTurn(False)
                 player2.setTurn(True)
+                print(f'player Twos Turn:{player2.getTurn()}')
+                print(f'player Ones Turn:{player1.getTurn()}')
+                print(f'player Ones Locked Turn:{player1.lockedTurn}')
+                print(f'player Two Locked Turn:{player2.lockedTurn}')
 
         elif(player2.getTurn() == True and player2.getLockedTurn() == True):
             player2.getWeapon().weaponFireTwo(player2.getWeapon().angle, player2.getWeapon().power, 0, player2.getTank().x0, player2.getTank().y0, app, player1.getTank().x0,player1.getTank().y0,player1.getTank().x1, player1.getTank().y1)
 
-            if (player2.getWeapon().outOfBounds == True or player2.getWeapon().tankHit == True):
+            if (player2.getWeapon().outOfBounds == True or player2.getWeapon().tankHit == True or player2.getWeapon().terrainHit == True):
 
 
                 if player2.getWeapon().tankHit == True:
@@ -116,17 +121,26 @@ def gameMode_timerFired(app):
 
                 player2.getWeapon().outOfBounds = False
                 player2.getWeapon().tankHit = False
+                player2.getWeapon().terrainHit = False
 
                 player2.setLockedTurn(False)
                 player2.setTurn(False)
                 player1.setTurn(True)
+                print(f'player Twos Turn:{player2.getTurn()}')
+                print(f'player Ones Turn:{player1.getTurn()}')
+                print(f'player Ones Locked Turn:{player1.lockedTurn}')
+                print(f'player Two Locked Turn:{player2.lockedTurn}')
 
 
 
     if player2.getTank().health <= 0:
         app.mode = 'pOneWin'
+        player1.getTank().health = 20
+        player2.getTank().health = 20
     elif player1.getTank().health <= 0:
         app.mode = 'pTwoWin'
+        player1.getTank().health = 20
+        player2.getTank().health = 20
 
 
 def gameMode_mousePressed(app, event):
@@ -140,11 +154,11 @@ def gameMode_keyPressed(app, event):
     #Fire Weapon
     if (event.key == 'f'):
 
-        if (player1.getTurn() == True):
+        if (player1.getTurn() == True and player1.getLockedTurn() == False):
             player1.setLockedTurn(True)
             player1.getWeapon().time = 0
 
-        elif player2.getTurn() == True:
+        elif player2.getTurn() == True and player2.getLockedTurn() == False:
             player2.setLockedTurn(True)
             player2.getWeapon().time = 0
 

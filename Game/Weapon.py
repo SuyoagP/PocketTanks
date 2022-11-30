@@ -16,7 +16,7 @@ class Weapon(App):
         self.fire = fired
         self.outOfBounds = False
         self.tankHit = False
-        self.terrainHit = True
+        self.terrainHit = False
         self.time = 0
     def weaponFireOne(self, angle, power, time, x0, y0, app, victimx0, victimy0, victimx1, victimy1):
 
@@ -35,7 +35,8 @@ class Weapon(App):
         #terrain hit check
         for block in app.rectangleCoords:
             blockX0, blockY0, blockX1, blockY1 = block
-            if (self.currX >= min(blockX0, blockX1) and self.currX <= max(blockX0, blockX1)) and (self.currY >= min(blockY0, blockY1) and self.currY <= max(blockY0, blockY1)):
+            if (self.currX >= min(blockX0, blockX1) and self.currX <= max(blockX0, blockX1)) and (
+                    self.currY >= min(blockY0, blockY1) and self.currY <= max(blockY0, blockY1)):
                 self.terrainHit = True
                 if self.terrainDestroy == True:
                     app.rectangleCoords.remove(block)
@@ -43,8 +44,6 @@ class Weapon(App):
                     app.rectangleCoords.append((blockX0, blockY0 - 25, blockX1, blockY1 - 50))
                     app.rectangleCoords.append((blockX0, blockY0 - 50, blockX1, blockY1 - 75))
                     app.rectangleCoords.append((blockX0, blockY0 - 75, blockX1, blockY1 - 100))
-
-
 
                 self.currX = x0
                 self.currY = y0
