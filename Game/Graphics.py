@@ -52,6 +52,7 @@ class Graphics:
                                     font='Arial 16 bold', fill='black')
 
     @staticmethod
+    #https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwjCwvWajdb7AhXxmokEHd9UDv0QFnoECAwQAQ&url=https%3A%2F%2Fwww.geeksforgeeks.org%2Fclass-method-vs-static-method-python%2F&usg=AOvVaw0q2GoARgy4NFTwE86n5kW5
     def createTerrain(app):
         from Params import player1,player2
         startPoint, startHeight = 0, app.height

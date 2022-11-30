@@ -23,14 +23,10 @@ def appStarted(app):
     app.startScreenBackGroundImage = app.loadImage('../Assets/Pocket-Tanks.png')
     app.image1 = app.loadImage('../Assets/Sunrise.png')
     app.image2 = app.scaleImage(app.image1, 2 / 3)
-    app.imageTankOne = app.loadImage('../Assets/TankOne.jpeg')
     app.playerOneTurn = True
     app.angle =(math.pi)
     app.mode = 'splashScreenMode'
     app.rectangleCoords = []
-    app.destroyedTerrain = []
-    app.weaponCoords = []
-    app.baseWeaponR = 5
     app.weaponFired = False
     app.startX,app.startY = player1.getTank().x1,player1.getTank().y0
     app.currX,app.currY = app.startX,app.startY
