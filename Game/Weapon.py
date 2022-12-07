@@ -21,8 +21,8 @@ class Weapon(App):
     def weaponFireOne(self, angle, power, time, x0, y0, app, victimx0, victimy0, victimx1, victimy1):
 
         gravity = 9.81
-        vx = power * math.cos(math.radians(angle))
-        vy = power * math.sin(math.radians(angle))
+        vx = 2*power * math.cos(math.radians(angle))
+        vy = 2*power * math.sin(math.radians(angle))
         self.currX = x0 + vx * self.time
         self.currY = y0 - (vy * self.time - 0.5 * gravity * self.time ** 2)
         #Out of bounds check
@@ -61,8 +61,8 @@ class Weapon(App):
     def weaponFireTwo(self, angle, power, time, x0, y0, app, victimx0, victimy0, victimx1, victimy1):
 
         gravity = 9.81
-        vx = power * math.cos(math.radians(angle))
-        vy = power * math.sin(math.radians(angle))
+        vx = 2*power * math.cos(math.radians(angle))
+        vy = 2*power * math.sin(math.radians(angle))
         self.currX = x0 - vx * self.time
         self.currY = y0 - (vy * self.time - 0.5 * gravity * self.time ** 2)
         # Out of bounds check
@@ -95,7 +95,7 @@ class Weapon(App):
             self.currX = x0
             self.currY = y0
             return
-        self.time += 0.02
+        self.time += 0.2
 
 
     def destroyTerrain(self, app):

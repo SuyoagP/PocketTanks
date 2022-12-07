@@ -21,9 +21,13 @@ def appStarted(app):
     app.timerDelay = 0
     app.destroyedTerrain = []
     app.TankOneY, app.TankTwoY = app.height, app.height
-    app.startScreenBackGroundImage = app.loadImage('../Assets/Pocket-Tanks.png')
-    app.image1 = app.loadImage('../Assets/Sunrise.png')
-    app.image2 = app.scaleImage(app.image1, 2 / 3)
+    app.startScreenBackGroundImage = app.loadImage('../Assets/WelcomeScreen.png')
+    app.startScreenBackGroundImage = app.scaleImage(app.startScreenBackGroundImage, 1.12)
+    app.planetImage = app.loadImage('../Assets/Planet-removebg-preview.png')
+    app.image1 = app.loadImage('../Assets/GameBackGroundGradient.jpeg')
+    app.image2 = app.scaleImage(app.image1, 5)
+    app.tankImageOne = app.loadImage('../Assets/pixel-tank-removebg-previewOne.png')
+    app.tankImageTwo = app.loadImage('../Assets/pixel-tank-removebg-previewTwo.png')
     app.playerOneTurn = True
     app.angle =(math.pi)
     app.mode = 'splashScreenMode'
@@ -44,12 +48,8 @@ def splashScreenMode_redrawAll(app, canvas):
     backGroundImage = app.startScreenBackGroundImage
     backGroundImage = app.scaleImage(backGroundImage, 2/3)
     canvas.create_image(app.width/2, app.height/4, image=ImageTk.PhotoImage(backGroundImage))
+    canvas.create_image(app.width / 2, 3 * app.height / 4, image=ImageTk.PhotoImage(app.planetImage))
 
-    buttonleft,buttonTop,buttonRight,buttonBottom = (app.width/4, 6*app.height/10,3*app.width/4,7*app.width/10)
-    canvas.create_text(app.width / 2, 200, text='This is the start Screen!',  fill = 'black')
-    canvas.create_text(app.width/2, 250, text='Press p for the game!',
-                       font = "Fixedsys 24 bold", fill='black')
-    canvas.create_rectangle(buttonleft, buttonTop, buttonRight, buttonBottom, fill='blue', outline='black')
 
 
 
@@ -71,10 +71,10 @@ def gameMode_redrawAll(app, canvas):
     graphicsEngine.updateTerrain()
     graphicsEngine.createBulletRight(player1.getWeapon(), 'red')
     graphicsEngine.createBulletLeft(player2.getWeapon(), 'blue')
-    graphicsEngine.createTank(player1.getTank())
-    graphicsEngine.createTank(player2.getTank())
-    graphicsEngine.createPlayerHealth(15, player1.getTank().health, 'One')
-    graphicsEngine.createPlayerHealth(400, player2.getTank().health, 'Two')
+    graphicsEngine.createTankOne(player1.getTank())
+    graphicsEngine.createTankTwo(player2.getTank())
+    graphicsEngine.createPlayerHealth(-1*app.width/30, player1.getTank().health, 'One')
+    graphicsEngine.createPlayerHealth(7.8*app.width/10, player2.getTank().health, 'Two')
     graphicsEngine.createPlayerPowerAngle(player1,player2)
 
 
@@ -83,7 +83,7 @@ def gameMode_redrawAll(app, canvas):
 
 def gameMode_timerFired(app):
     app.timerDelay += 1
-    if app.timerDelay >= 0.0001:
+    if app.timerDelay >= 0.1:
         app.timerDelay = 0
 
         if (player1.getTurn() == True and player1.getLockedTurn() == True):
@@ -228,7 +228,7 @@ def gameMode_keyPressed(app, event):
 # Player Two Win Screen
 ##########################################
 def pOneWin_redrawAll(app, canvas):
-    font = 'Arial 26 bold'
+    font = 'Futura 36'
     canvas.create_text(app.width/2, 150, text='Player One Wins',
                        font=font, fill='black')
     canvas.create_text(app.width/2, 250, text='Congrats!',
@@ -242,7 +242,7 @@ def pOneWin_keyPressed(app, event):
 # Player Two Win Screen
 ##########################################
 def pTwoWin_redrawAll(app, canvas):
-    font = 'Arial 26 bold'
+    font = 'Futura 36'
     canvas.create_text(app.width/2, 150, text='Player Two Wins!',
                        font=font, fill='black')
     canvas.create_text(app.width/2, 250, text='Congrats!',
@@ -259,15 +259,17 @@ def pTwoWin_keyPressed(app, event):
 ##########################################
 
 def helpMode_redrawAll(app, canvas):
-    font = 'Arial 26 bold'
-    canvas.create_text(app.width/2, 150, text='This is the help screen!', 
-                       font=font, fill='black')
-    canvas.create_text(app.width/2, 250, text='(Insert helpful message here)',
-                       font=font, fill='black')
-    canvas.create_text(app.width/2, 350, 
-                        text='Press any key to return to the game!',
-                       font=font, fill='black')
-
+    canvas.create_image(200, 200, image=ImageTk.PhotoImage(app.image2))
+    canvas.create_text(app.width / 2, app.height / 15,
+                            text='How To Play', font='Futura 40', fill='white')
+    canvas.create_text(app.width / 2,1.5* app.height / 10,
+                            text='Use the Up and Down arrow keys to change the angle of your shot', font='Futura 25', fill='white')
+    canvas.create_text(app.width / 2, 2.5* app.height / 10,
+                            text='Use the W and S keys to change the Power of your shot', font='Futura 25', fill='white')
+    canvas.create_text(app.width / 2, 3.5* app.height / 10,
+                            text='Use the 1,2,3 keys to toggle between the Bullet, the Mountain Mover, and the Magic Wall', font='Futura 25', fill='white')
+    canvas.create_text(app.width / 2, 4.5* app.height / 10,
+                            text='Press any Key to return to the Game', font='Futura 40', fill='white')
 def helpMode_keyPressed(app, event):
     app.mode = 'gameMode'
 
@@ -276,4 +278,4 @@ def helpMode_keyPressed(app, event):
 
 
 
-runApp(width=600, height=500)
+runApp(width=1200, height=1000)
