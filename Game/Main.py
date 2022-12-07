@@ -21,9 +21,11 @@ def appStarted(app):
     app.timerDelay = 0
     app.destroyedTerrain = []
     app.TankOneY, app.TankTwoY = app.height, app.height
-    app.startScreenBackGroundImage = app.loadImage('../Assets/WelcomeScreen.png')
-    app.startScreenBackGroundImage = app.scaleImage(app.startScreenBackGroundImage, 1.12)
-    app.planetImage = app.loadImage('../Assets/Planet-removebg-preview.png')
+    #https://play.google.com/store/apps/details?id=com.blitwise.ptankshd&hl=en_US&gl=US
+    app.startScreenBackGroundImage = app.loadImage('../Assets/PTSS.gif')
+    app.startScreenBackGroundImage = app.scaleImage(app.startScreenBackGroundImage, 4)
+    app.planetImage = app.loadImage('../Assets/ptanks.icns')
+    app.planetImage = app.scaleImage(app.planetImage, 0.6)
     app.image1 = app.loadImage('../Assets/GameBackGroundGradient.jpeg')
     app.image2 = app.scaleImage(app.image1, 5)
     app.tankImageOne = app.loadImage('../Assets/pixel-tank-removebg-previewOne.png')
@@ -44,11 +46,14 @@ def appStarted(app):
 
 
 def splashScreenMode_redrawAll(app, canvas):
+    canvas.create_rectangle(0, 0,app.width,app.height, fill='black')
     #image found here: https://www.google.com/url?sa=i&url=https%3A%2F%2Fplaceit.net%2Fc%2Fvideos%2Fstages%2Ftwitch-offline-screen-video-maker-with-an-8-bit-style-and-city-graphics-3853&psig=AOvVaw1JVAZw1M26CXq3YOnky7du&ust=1669676524573000&source=images&cd=vfe&ved=0CBAQ3YkBahcKEwiwzLjyu8_7AhUAAAAAHQAAAAAQBA
     backGroundImage = app.startScreenBackGroundImage
     backGroundImage = app.scaleImage(backGroundImage, 2/3)
     canvas.create_image(app.width/2, app.height/4, image=ImageTk.PhotoImage(backGroundImage))
     canvas.create_image(app.width / 2, 3 * app.height / 4, image=ImageTk.PhotoImage(app.planetImage))
+    canvas.create_text(8.5*app.width / 10, 9.5 * app.height / 10,
+                      text='Press P to Play!', font='Futura 40', fill='white')
 
 
 
@@ -89,14 +94,13 @@ def gameMode_timerFired(app):
         if (player1.getTurn() == True and player1.getLockedTurn() == True):
 
 
-            player1.getWeapon().weaponFireOne(player1.getWeapon().angle, player1.getWeapon().power, 0, player1.getTank().x1, player1.getTank().y0, app, player2.getTank().x0,player2.getTank().y0,player2.getTank().x1, player2.getTank().y1)
+            player1.getWeapon().weaponFireOne(player1.getWeapon().angle, player1.getWeapon().power, 0, player1.getTank().x1, player1.getTank().y0-3, app, player2.getTank().x0,player2.getTank().y0,player2.getTank().x1, player2.getTank().y1)
 
             if (player1.getWeapon().outOfBounds == True or player1.getWeapon().tankHit == True or player1.getWeapon().terrainHit == True):
 
                 if player1.getWeapon().tankHit == True:
-                    print("hitter")
                     player2.getTank().health -= player1.getWeapon().damage
-                    print(player2.getTank().health)
+
 
 
                 player1.getWeapon().outOfBounds = False
@@ -106,13 +110,10 @@ def gameMode_timerFired(app):
                 player1.setLockedTurn(False)
                 player1.setTurn(False)
                 player2.setTurn(True)
-                print(f'player Twos Turn:{player2.getTurn()}')
-                print(f'player Ones Turn:{player1.getTurn()}')
-                print(f'player Ones Locked Turn:{player1.lockedTurn}')
-                print(f'player Two Locked Turn:{player2.lockedTurn}')
+
 
         elif(player2.getTurn() == True and player2.getLockedTurn() == True):
-            player2.getWeapon().weaponFireTwo(player2.getWeapon().angle, player2.getWeapon().power, 0, player2.getTank().x0, player2.getTank().y0, app, player1.getTank().x0,player1.getTank().y0,player1.getTank().x1, player1.getTank().y1)
+            player2.getWeapon().weaponFireTwo(player2.getWeapon().angle, player2.getWeapon().power, 0, player2.getTank().x0, player2.getTank().y0-3, app, player1.getTank().x0,player1.getTank().y0,player1.getTank().x1, player1.getTank().y1)
 
             if (player2.getWeapon().outOfBounds == True or player2.getWeapon().tankHit == True or player2.getWeapon().terrainHit == True):
 
@@ -127,10 +128,7 @@ def gameMode_timerFired(app):
                 player2.setLockedTurn(False)
                 player2.setTurn(False)
                 player1.setTurn(True)
-                print(f'player Twos Turn:{player2.getTurn()}')
-                print(f'player Ones Turn:{player1.getTurn()}')
-                print(f'player Ones Locked Turn:{player1.lockedTurn}')
-                print(f'player Two Locked Turn:{player2.lockedTurn}')
+
 
 
 
@@ -170,37 +168,29 @@ def gameMode_keyPressed(app, event):
     elif (event.key == 'Up'):
         if player1.getTurn() == True:
             player1.getWeapon().angle += 1
-            print(player1.getWeapon().angle)
         elif player2.getTurn() == True:
             player2.getWeapon().angle += 1
-            print(player2.getWeapon().angle)
 
     #Decrease Angle
     elif (event.key == 'Down'):
         if player1.getTurn() == True:
             player1.getWeapon().angle -= 1
-            print(player1.getWeapon().angle)
         elif player2.getTurn() == True:
             player2.getWeapon().angle -= 1
-            print(player2.getWeapon().angle)
 
     #Increase Power
     elif (event.key == 'w'):
         if player1.getTurn() == True:
             player1.getWeapon().power += 1
-            print(player1.getWeapon().power)
         elif player2.getTurn() == True:
             player2.getWeapon().power += 1
-            print(player2.getWeapon().power)
 
     #Decrease Power
     elif (event.key == 's'):
         if player1.getTurn() == True:
             player1.getWeapon().power -= 1
-            print(player1.getWeapon().power)
         elif player2.getTurn() == True:
             player2.getWeapon().power -= 1
-            print(player2.getWeapon().power)
 
     #Toggle Bullet
     if (event.key == '1'):
@@ -213,7 +203,6 @@ def gameMode_keyPressed(app, event):
     elif (event.key == '2'):
         if (player1.turn == True):
             player1.weapon = MountainMover(player1.getTank().getx1(), player1.getTank().gety0(), 45, 50, False, 76, 390)
-            print("MM")
         elif (player2.turn == True):
             player2.weapon = MountainMover(player2.getTank().getx1(), player2.getTank().gety0(), 45, 50, False, 285, 390)
 
@@ -221,7 +210,6 @@ def gameMode_keyPressed(app, event):
     elif (event.key == '3'):
         if (player1.turn == True):
             player1.weapon = MagicWall(player1.getTank().getx1(), player1.getTank().gety0(), 45, 50, False, 76, 390)
-            print("MW")
         elif (player2.turn == True):
             player2.weapon = MagicWall(player2.getTank().getx1(), player2.getTank().gety0(), 45, 50, False, 285, 390)
 ##########################################

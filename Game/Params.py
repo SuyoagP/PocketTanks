@@ -10,11 +10,11 @@ p2Tank = Tank('black', 20, True, 850, 0, 875, 400)
 player1 = Player(
     tank=p1Tank,
     turn=True,
-    weapon=Bullet(p1Tank.getx1(), p1Tank.gety0(), 45, 50, False, 76, 390)
+    weapon=Bullet(p1Tank.getx1(), p1Tank.gety0()-2, 45, 50, False, 76, 390)
 )
 player2 = Player(
     tank=p2Tank,
     turn=False,
-    weapon=Bullet(p2Tank.getx0(), p2Tank.gety0(), 45, 50, False, 285, 390)
+    weapon=Bullet(p2Tank.getx0(), p2Tank.gety0()-2, 45, 50, False, 285, 390)
 )
 

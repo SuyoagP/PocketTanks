@@ -21,8 +21,8 @@ class Weapon(App):
     def weaponFireOne(self, angle, power, time, x0, y0, app, victimx0, victimy0, victimx1, victimy1):
 
         gravity = 9.81
-        vx = 2*power * math.cos(math.radians(angle))
-        vy = 2*power * math.sin(math.radians(angle))
+        vx = 1.5 * power * math.cos(math.radians(angle))
+        vy = 1.5 * power * math.sin(math.radians(angle))
         self.currX = x0 + vx * self.time
         self.currY = y0 - (vy * self.time - 0.5 * gravity * self.time ** 2)
         #Out of bounds check
@@ -51,7 +51,6 @@ class Weapon(App):
 
         #Check if it has hit opponent
         if (self.currX > victimx0 and self.currX < victimx1) and (self.currY > victimy0 and self.currY < victimy1):
-            print("OH YEAH")
             self.tankHit = True
             self.currX = x0
             self.currY = y0
@@ -61,8 +60,8 @@ class Weapon(App):
     def weaponFireTwo(self, angle, power, time, x0, y0, app, victimx0, victimy0, victimx1, victimy1):
 
         gravity = 9.81
-        vx = 2*power * math.cos(math.radians(angle))
-        vy = 2*power * math.sin(math.radians(angle))
+        vx = 1.5 * power * math.cos(math.radians(angle))
+        vy = 1.5 * power * math.sin(math.radians(angle))
         self.currX = x0 - vx * self.time
         self.currY = y0 - (vy * self.time - 0.5 * gravity * self.time ** 2)
         # Out of bounds check
@@ -90,12 +89,11 @@ class Weapon(App):
 
         # Check if it has hit opponent
         if (self.currX > victimx0 and self.currX < victimx1) and (self.currY > victimy0 and self.currY < victimy1):
-            print("OH YEAH")
             self.tankHit = True
             self.currX = x0
             self.currY = y0
             return
-        self.time += 0.2
+        self.time += 0.02
 
 
     def destroyTerrain(self, app):

@@ -15,7 +15,7 @@ class Graphics:
 
     def createBackground(self):
         #https://www.stockvault.net/photo/279149/black-and-purple-gradient-background Image found here
-        self.canvas.create_image(200, 200, image=ImageTk.PhotoImage(self.app.image2))
+        self.canvas.create_image(self.app.width/2, self.app.height/2 + 20, image=ImageTk.PhotoImage(self.app.image2))
 
     def updateTerrain(self):
         for coords in self.app.rectangleCoords:
